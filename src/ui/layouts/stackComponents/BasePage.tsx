@@ -1,13 +1,18 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { AppRoute } from '../../../routes';
 import { Box, FlexBox, IfElse } from '../../components';
 import { AuthenticatedLayout } from '../common/layouts/AuthenticatedLayout';
 import { SidebarContainer } from '../common/layouts/SidebarContainer';
-import { Tabs } from '../common/Tabs';
+import { TabsRuns } from '../common/Tabs';
 import Header from './Header';
 import Stacks from './Stacks';
 import Component from './Component';
+import { useSelector } from '../../hooks';
+import { workspaceSelectors } from '../../../redux/selectors';
+import { MyFallbackComponent } from '../../components/FallbackComponent';
+import { ErrorBoundary } from 'react-error-boundary';
+import { routePaths } from '../../../routes/routePaths';
 
 export const BasePage: React.FC<{
   tabPages: TabPage[];
@@ -31,8 +36,15 @@ export const BasePage: React.FC<{
   children,
   title,
 }) => {
+  const history = useHistory();
+  const selectedWorkspace = useSelector(workspaceSelectors.selectedWorkspace);
   return (
-    <>
+    <ErrorBoundary
+      FallbackComponent={MyFallbackComponent}
+      onReset={() => {
+        history.push(routePaths.dashboard(selectedWorkspace));
+      }}
+    >
       <AuthenticatedLayout breadcrumb={[...breadcrumbs]}>
         <SidebarContainer>
           <IfElse
@@ -64,8 +76,8 @@ export const BasePage: React.FC<{
               style={{ width: !fromConfigureComponent ? '80%' : '100%' }}
             >
               {children}
-              {tabPages.length > 1 || singleTab ? (
-                <Tabs pages={tabPages} basePath={tabBasePath} />
+              {tabPages.length > 1 ? (
+                <TabsRuns pages={tabPages} basePath={tabBasePath} />
               ) : (
                 <>
                   <FlexBox marginTop="xxl" marginBottom="sm"></FlexBox>
@@ -87,7 +99,7 @@ export const BasePage: React.FC<{
           </FlexBox.Row>
         </SidebarContainer>
       </AuthenticatedLayout>
-    </>
+    </ErrorBoundary>
   );
 };
 

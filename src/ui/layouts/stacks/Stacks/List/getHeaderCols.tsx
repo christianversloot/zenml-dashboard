@@ -17,10 +17,20 @@ import { HeaderCol } from '../../../common/Table';
 import { SortingHeader } from './ForSorting/SortingHeader';
 import { Sorting, SortingDirection } from './ForSorting/types';
 import { useService } from './ForSorting/useServiceForSorting';
+import { Stack } from '../../../../../api/types';
+
+const HeaderText = ({ text, margin }: { text: string; margin?: string }) => (
+  <Paragraph
+    size="small"
+    color="black"
+    style={{ fontSize: '14px', marginLeft: margin }}
+  >
+    {text}
+  </Paragraph>
+);
 
 export const GetHeaderCols = ({
   expendedRow,
-
   setOpenStackIds,
   filteredStacks,
   setFilteredStacks,
@@ -32,8 +42,8 @@ export const GetHeaderCols = ({
   expendedRow?: any;
   openStackIds: TId[];
   setOpenStackIds: (ids: TId[]) => void;
-  filteredStacks: TStack[];
-  setFilteredStacks: (stacks: TStack[]) => void;
+  filteredStacks: Stack[];
+  setFilteredStacks: (stacks: Stack[]) => void;
   activeSorting: Sorting | null;
   activeSortingDirection: SortingDirection | null;
   setActiveSortingDirection: (direction: SortingDirection | null) => void;
@@ -55,25 +65,20 @@ export const GetHeaderCols = ({
           onlyOneRow={filteredStacks.length === 1 || expendedRow?.length === 1}
           sorting="id"
           sortMethod={sortMethod('id', {
-            asc: (filteredStacks: TStack[]) =>
+            asc: (filteredStacks: Stack[]) =>
               _.orderBy(filteredStacks, ['id'], ['asc']),
-            desc: (filteredStacks: TStack[]) =>
+            desc: (filteredStacks: Stack[]) =>
               _.orderBy(filteredStacks, ['id'], ['desc']),
           })}
           activeSorting={activeSorting}
           activeSortingDirection={activeSortingDirection}
         >
-          <Paragraph
-            size="small"
-            color="black"
-            style={{ fontSize: '14px', marginLeft: '33px' }}
-          >
-            ID
-          </Paragraph>
+          <HeaderText text="ID" margin="33px" />
         </SortingHeader>
       ),
+      testId: 'Id',
       width: '20%',
-      renderRow: (stack: TStack) => (
+      renderRow: (stack: Stack) => (
         <FlexBox alignItems="center">
           <div data-tip data-for={stack.id}>
             <FlexBox.Row style={{ alignItems: 'center' }}>
@@ -100,21 +105,20 @@ export const GetHeaderCols = ({
           onlyOneRow={filteredStacks.length === 1 || expendedRow?.length === 1}
           sorting="name"
           sortMethod={sortMethod('name', {
-            asc: (filteredStacks: TStack[]) =>
+            asc: (filteredStacks: Stack[]) =>
               _.orderBy(filteredStacks, ['name'], ['asc']),
-            desc: (filteredStacks: TStack[]) =>
+            desc: (filteredStacks: Stack[]) =>
               _.orderBy(filteredStacks, ['name'], ['desc']),
           })}
           activeSorting={activeSorting}
           activeSortingDirection={activeSortingDirection}
         >
-          <Paragraph size="small" color="black" style={{ fontSize: '14px' }}>
-            NAME
-          </Paragraph>
+          <HeaderText text="NAME" />
         </SortingHeader>
       ),
+      testId: 'Name',
       width: '30%',
-      renderRow: (stack: TStack) => (
+      renderRow: (stack: Stack) => (
         <FlexBox alignItems="center">
           <div data-tip data-for={stack.name}>
             <Paragraph size="small" color="black">
@@ -131,36 +135,31 @@ export const GetHeaderCols = ({
           onlyOneRow={filteredStacks.length === 1 || expendedRow?.length === 1}
           sorting="is_shared"
           sortMethod={sortMethod('is_shared', {
-            asc: (filteredStacks: TStack[]) =>
+            asc: (filteredStacks: Stack[]) =>
               _.orderBy(filteredStacks, ['is_shared'], ['asc']),
-            desc: (filteredStacks: TStack[]) =>
+            desc: (filteredStacks: Stack[]) =>
               _.orderBy(filteredStacks, ['is_shared'], ['desc']),
           })}
           activeSorting={activeSorting}
           activeSortingDirection={activeSortingDirection}
         >
           <Box style={{ margin: '0 auto 0 auto', textAlign: 'center' }}>
-            <Paragraph
-              size="small"
-              color="black"
-              style={{ marginLeft: '-16px' }}
-            >
-              SHARED
-            </Paragraph>
+            <HeaderText text="SHARED" margin="-16px" />
           </Box>
         </SortingHeader>
       ),
+      testId: 'Shared',
       width: '15%',
-      renderRow: (stack: TStack) => (
+      renderRow: (stack: Stack) => (
         <FlexBox alignItems="center">
           <div
             style={{ margin: '0 auto 0 auto' }}
             data-tip
-            data-for={stack.isShared}
+            data-for={stack.is_shared}
           >
             <Box>
               <FlexBox justifyContent="center" style={{ marginLeft: '-16px' }}>
-                {stack.isShared ? (
+                {stack.is_shared ? (
                   <icons.multiUser
                     color={iconColors.white}
                     size={iconSizes.md}
@@ -175,8 +174,8 @@ export const GetHeaderCols = ({
             </Box>
           </div>
           <Tooltip
-            id={stack.isShared ? 'true' : 'false'}
-            text={stack.isShared ? 'true' : 'false'}
+            id={stack.is_shared ? 'true' : 'false'}
+            text={stack.is_shared ? 'true' : 'false'}
           />
         </FlexBox>
       ),
@@ -188,21 +187,20 @@ export const GetHeaderCols = ({
           onlyOneRow={filteredStacks.length === 1 || expendedRow?.length === 1}
           sorting="user_id"
           sortMethod={sortMethod('user_id', {
-            asc: (filteredStacks: TStack[]) =>
+            asc: (filteredStacks: Stack[]) =>
               _.orderBy(filteredStacks, ['user_id'], ['asc']),
-            desc: (filteredStacks: TStack[]) =>
+            desc: (filteredStacks: Stack[]) =>
               _.orderBy(filteredStacks, ['user_id'], ['desc']),
           })}
           activeSorting={activeSorting}
           activeSortingDirection={activeSortingDirection}
         >
-          <Paragraph size="small" color="black" style={{ fontSize: '14px' }}>
-            AUTHOR
-          </Paragraph>
+          <HeaderText text="AUTHOR" />
         </SortingHeader>
       ),
+      testId: 'Author',
       width: '15%',
-      renderRow: (stack: TStack) => {
+      renderRow: (stack: Stack) => {
         return (
           <FlexBox alignItems="center">
             <div
@@ -243,29 +241,28 @@ export const GetHeaderCols = ({
           onlyOneRow={filteredStacks.length === 1 || expendedRow?.length === 1}
           sorting="created"
           sortMethod={sortMethod('created', {
-            asc: (filteredStacks: TStack[]) =>
+            asc: (filteredStacks: Stack[]) =>
               _.orderBy(
                 filteredStacks,
-                (stack: TStack) => new Date(stack.created).getTime(),
+                (stack: Stack) => new Date(stack.created).getTime(),
                 ['asc'],
               ),
-            desc: (filteredStacks: TStack[]) =>
+            desc: (filteredStacks: Stack[]) =>
               _.orderBy(
                 filteredStacks,
-                (stack: TStack) => new Date(stack.created).getTime(),
+                (stack: Stack) => new Date(stack.created).getTime(),
                 ['desc'],
               ),
           })}
           activeSorting={activeSorting}
           activeSortingDirection={activeSortingDirection}
         >
-          <Paragraph size="small" color="black" style={{ fontSize: '14px' }}>
-            CREATED AT
-          </Paragraph>
+          <HeaderText text="CREATED AT" />
         </SortingHeader>
       ),
+      testId: 'created_at',
       width: '20%',
-      renderRow: (stack: TStack) => (
+      renderRow: (stack: Stack) => (
         <FlexBox alignItems="center">
           <div data-tip data-for={formatDateToSort(stack.created)}>
             <FlexBox alignItems="center">

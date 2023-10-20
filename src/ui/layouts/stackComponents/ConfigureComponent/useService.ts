@@ -1,10 +1,7 @@
 /* eslint-disable */
 
 import { useEffect, useState } from 'react';
-
 import { useParams, useSelector } from '../../../hooks';
-import axios from 'axios';
-
 import {
   flavorSelectors,
   sessionSelectors,
@@ -12,9 +9,11 @@ import {
 } from '../../../../redux/selectors';
 
 import { FlavorDetailRouteParams } from '.';
+import { Flavor } from '../../../../api/types';
+import axios from 'axios';
 
 interface ServiceInterface {
-  flavor: any;
+  flavor: Flavor;
   id: any;
   fetching?: boolean;
   serviceConnectorResources?: any;

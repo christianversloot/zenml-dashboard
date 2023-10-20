@@ -11,21 +11,24 @@ import { Configuration } from './Configuration';
 import { BasePage } from '../BasePage';
 import { useService } from './useService';
 import { useHistory, useLocationPath, useSelector } from '../../../hooks';
-import FilterComponent, {
-  getInitialFilterState,
-} from '../../../components/Filters';
+import FilterComponent from '../../../components/Filters';
 import { workspaceSelectors } from '../../../../redux/selectors';
+import { StackComponent } from '../../../../api/types';
 
 import { List } from '../../stacks/Stacks/List';
 import { CollapseTable } from '../../common/CollapseTable';
 import { GetHeaderCols } from './getHeaderCols';
+import {
+  getInitialFilterStateStacks,
+  searchParamConstants,
+} from '../../stacks/Stacks/filterParamConstants';
 
 const FilterWrapperForStacks = () => {
   const locationPath = useLocationPath();
   const history = useHistory();
   const selectedWorkspace = useSelector(workspaceSelectors.selectedWorkspace);
   // TODO: Dev please note: getInitialFilterState is for stack inital filter value for any other component you need to modify it
-  const [filters, setFilter] = useState([getInitialFilterState()]);
+  const [filters, setFilter] = useState([getInitialFilterStateStacks()]);
   function getFilter(values: any) {
     const filterValuesMap = values.map((v: any) => {
       return {
@@ -39,7 +42,8 @@ const FilterWrapperForStacks = () => {
   return (
     <Box marginTop="lg" style={{ width: '100%' }}>
       <FilterComponent
-        getInitials={getInitialFilterState}
+        searchColumns={searchParamConstants}
+        getInitials={getInitialFilterStateStacks}
         filters={filters}
         setFilter={setFilter}
       >
@@ -99,6 +103,7 @@ const getTabPages = (
     },
 
     {
+      testId: 'stack_tab',
       text: 'Stacks',
       Component: FilterWrapperForStacks,
       path: routePaths.stackComponents.stacks(
@@ -186,7 +191,7 @@ export const StackDetail: React.FC = () => {
     mappedStackComponentWithLogo,
   });
 
-  const openDetailPage = (stack: TStack) => {
+  const openDetailPage = (stack: StackComponent) => {
     history.push(
       routePaths.stackComponents.base(
         locationPath.split('/')[4],
@@ -208,7 +213,7 @@ export const StackDetail: React.FC = () => {
       <Box style={{ marginTop: '40px', overflowX: 'auto' }}>
         <CollapseTable
           pagination={false}
-          renderAfterRow={(stack: TStack) => <></>}
+          renderAfterRow={(stack: StackComponent) => <></>}
           headerCols={headerCols}
           tableRows={mappedStackComponentWithLogo}
           trOnClick={openDetailPage}

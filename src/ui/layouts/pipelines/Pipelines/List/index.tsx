@@ -18,6 +18,7 @@ import { ItemPerPage } from '../../../common/ItemPerPage';
 import { usePaginationAsQueryParam } from '../../../../hooks/usePaginationAsQueryParam';
 import { callActionForPipelinesForPagination } from '../useService';
 import { Pagination } from '../../../common/Pagination';
+import { Pipeline } from '../../../../../api/types';
 
 interface Props {
   filter: any;
@@ -25,6 +26,7 @@ interface Props {
   id?: string;
   isExpended?: boolean;
 }
+
 export const List: React.FC<Props> = ({
   filter,
   pagination,
@@ -75,7 +77,7 @@ export const List: React.FC<Props> = ({
     setActiveSortingDirection,
   });
 
-  const openDetailPage = (pipeline: TPipeline) => {
+  const openDetailPage = (pipeline: Pipeline) => {
     setSelectedRunIds([]);
     if (id) {
       history.push(routePaths.pipelines.list(selectedWorkspace));
@@ -89,7 +91,7 @@ export const List: React.FC<Props> = ({
     ?.map((f: any) => f.value && f.type.value)
     .join('');
   const checkValidFilter = isValidFilterFroValue + isValidFilterForCategory;
-
+  console.log(validFilters, 'validFiltersvalidFilters');
   useEffect(() => {
     if (filter) {
       setPageIndex(0);
@@ -119,7 +121,7 @@ export const List: React.FC<Props> = ({
       }}
     >
       <CollapseTable
-        renderAfterRow={(pipeline: TPipeline) => (
+        renderAfterRow={(pipeline: Pipeline) => (
           <RunsForPipelineTable
             pipeline={pipeline}
             openPipelineIds={openPipelineIds}
@@ -138,7 +140,7 @@ export const List: React.FC<Props> = ({
         headerCols={headerCols}
         tableRows={filteredPipelines}
         emptyState={
-          filter[0]?.value
+          filter && filter[0]?.value
             ? {
                 text: translate('emptyState.text'),
               }

@@ -3,9 +3,10 @@ import styles from './repository-grid.module.scss';
 import RepositoryCard from '../repository-card';
 import { translate } from '../translate';
 import { H3 } from '../../../../components';
+import { Repository } from '../../../../../api/types';
 
 interface RepositoryListProps {
-  repositories: TRepository[];
+  repositories: Repository[];
 }
 
 function RepositoryGrid({ repositories }: RepositoryListProps) {
@@ -17,7 +18,7 @@ function RepositoryGrid({ repositories }: RepositoryListProps) {
       </div>
     );
   return (
-    <div className={styles.repositoryList}>
+    <div className={styles.repositoryList} data-testid="repository_card">
       {repositories.map((repo) => (
         <RepositoryCard repository={repo} key={repo.id} />
       ))}

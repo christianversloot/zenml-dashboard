@@ -10,15 +10,16 @@ import {
   If,
 } from '../../../../../components';
 import { useService } from './useService';
+import { StackComponent } from '../../../../../../api/types';
 
-export const UserName: React.FC<{ stack: TStack }> = ({ stack }) => {
+export const UserName: React.FC<{ stack: StackComponent }> = ({ stack }) => {
   const { fetching, user } = useService({ stack });
 
   if (fetching) {
     return <Spinner size="xs" color="black" />;
   }
 
-  const userFullName = user.fullName || DEFAULT_FULL_NAME;
+  const userFullName = user.full_name || DEFAULT_FULL_NAME;
   const initials = getInitials(userFullName);
 
   return (

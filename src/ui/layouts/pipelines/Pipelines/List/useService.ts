@@ -16,13 +16,14 @@ import {
 import { getFilteredDataForTable } from '../../../../../utils/tableFilters';
 import { Sorting, SortingDirection } from './ForSorting/types';
 import { callActionForPipelinesForPagination } from '../useService';
+import { Pipeline } from '../../../../../api/types';
 
 interface ServiceInterface {
   openPipelineIds: TId[];
   setOpenPipelineIds: (ids: TId[]) => void;
   fetching: boolean;
-  filteredPipelines: TPipeline[];
-  setFilteredPipelines: (pipelines: TPipeline[]) => void;
+  filteredPipelines: Pipeline[];
+  setFilteredPipelines: (pipelines: Pipeline[]) => void;
   setSelectedRunIds: (ids: TId[]) => void;
   activeSorting: Sorting | null;
   setActiveSorting: (arg: Sorting | null) => void;
@@ -57,7 +58,7 @@ export const useService = ({
   const dispatch = useDispatch();
 
   const [openPipelineIds, setOpenPipelineIds] = useState<TId[]>([]);
-  const [filteredPipelines, setFilteredPipelines] = useState<TPipeline[]>([]);
+  const [filteredPipelines, setFilteredPipelines] = useState<Pipeline[]>([]);
 
   const fetching = useSelector(pipelinePagesSelectors.fetching);
   const selectedWorkspace = useSelector(workspaceSelectors.selectedWorkspace);
@@ -67,6 +68,7 @@ export const useService = ({
   );
   const isValidFilter = filter?.map((f) => f.value).join('');
   const { dispatchPipelineData } = callActionForPipelinesForPagination();
+
   useEffect(() => {
     setFilteredPipelines(pipelines as any[]);
   }, [filter, pipelines]);
@@ -78,9 +80,8 @@ export const useService = ({
           activeSortingDirection?.toLowerCase() + ':' + activeSorting;
         dispatch(
           pipelinesActions.getMy({
-            sort_by: applySorting ? applySorting : 'created',
+            sort_by: applySorting !== 'created' ? applySorting : 'created',
             logical_operator: 'and',
-
             workspace: selectedWorkspace,
             page: pipelinesPaginated.page,
             size: pipelinesPaginated.size,

@@ -1,16 +1,20 @@
-import axios from 'axios';
-
 import { HUB_API_URL } from '../../../api/constants';
+import { hubAxios } from '../../../utils/axios';
 import { memoisePromiseFn } from '../../../utils/memo';
+import { PluginVersion, Plugin } from './pluginsTypes';
 
 const auth = (token: string) => ({
   headers: { Authorization: `Bearer ${token}` },
 });
 
-const addCanonicalUrl = <X extends TPluginDetail | TPluginVersion>(
-  plugin: X,
+const addCanonicalUrl = <X extends Plugin | TPluginVersion | any>(
+  plugin: X | any,
 ): X => {
-  const { repository_url, repository_branch, repository_subdirectory } = plugin;
+  const {
+    repository_url,
+    repository_branch,
+    repository_subdirectory,
+  } = plugin as any;
   let canonical_url = repository_url;
   if (repository_branch) {
     canonical_url = `${canonical_url}/tree/${repository_branch}`;
@@ -27,14 +31,14 @@ const addCanonicalUrl = <X extends TPluginDetail | TPluginVersion>(
 export const getPlugin = async (
   pluginId: string,
   available = true,
-): Promise<TPluginDetail> => {
+): Promise<Plugin> => {
   const plugin = (
-    await axios.get(
+    await hubAxios.get(
       `${HUB_API_URL}/plugins/${pluginId}${
         available ? '?status=available' : ''
       }`,
     )
-  ).data as TPluginDetail;
+  ).data as Plugin;
   return addCanonicalUrl(plugin);
 };
 
@@ -42,7 +46,7 @@ export const getPlugins: (
   searchQuery: string,
   filterQueries: string[],
   token: string | null,
-) => Promise<TPlugin[]> = memoisePromiseFn(
+) => Promise<Plugin[]> = memoisePromiseFn(
   async (
     searchQuery: string,
     filterQueries: string[],
@@ -52,24 +56,25 @@ export const getPlugins: (
     const filter =
       filterQueries.length > 0 ? '&' + filterQueries.join('&') : '';
     return (
-      await axios.get(
+      await hubAxios.get(
         `${HUB_API_URL}/plugins?status=available${search}${filter}`,
         token ? auth(token) : {},
       )
-    ).data as TPlugin[];
+    ).data as Plugin[];
   },
 );
 
 export const getVersion = async (versionID: string) => {
-  return (await axios.get(`${HUB_API_URL}/plugin_versions/${versionID}`)).data;
+  return (await hubAxios.get(`${HUB_API_URL}/plugin_versions/${versionID}`))
+    .data;
 };
 
-export const getVersions = async (pluginId: TId): Promise<TPluginVersion[]> => {
+export const getVersions = async (pluginId: TId): Promise<PluginVersion[]> => {
   return (
-    await axios.get(
+    await hubAxios.get(
       `${HUB_API_URL}/plugin_versions?status=available&plugin_id=${pluginId}`,
     )
-  ).data as TPluginVersion[];
+  ).data as PluginVersion[];
 };
 
 export const getStarredPlugins = async (
@@ -77,7 +82,7 @@ export const getStarredPlugins = async (
   token: string,
 ): Promise<Set<TId>> => {
   const interactions = (
-    await axios.get(
+    await hubAxios.get(
       `${HUB_API_URL}/interaction?interaction_type=star&mine=true&user_id=${userId}`,
       auth(token),
     )
@@ -92,7 +97,7 @@ export const getIsStarred = async (
   token: string,
 ): Promise<boolean> => {
   const interactions = (
-    await axios.get(
+    await hubAxios.get(
       `${HUB_API_URL}/interaction?interaction_type=star&mine=true&user_id=${userId}&plugin_id=${pluginId}`,
       auth(token),
     )
@@ -106,7 +111,7 @@ export const starPlugin = async (
   pluginId: TId,
   token: string,
 ): Promise<void> => {
-  return await axios.post(
+  return await hubAxios.post(
     `${HUB_API_URL}/interaction`,
     { type: 'star', user_id: userId, plugin_id: pluginId },
     auth(token),
@@ -114,13 +119,17 @@ export const starPlugin = async (
 };
 
 export const getTagOptions = async (query: string): Promise<string[]> => {
-  return ((await axios.get(`${HUB_API_URL}/tag?limit=8&name_contains=${query}`))
-    .data as { name: string }[]).map((t) => t.name);
+  return ((
+    await hubAxios.get(`${HUB_API_URL}/tag?limit=8&name_contains=${query}`)
+  ).data as { name: string }[]).map((t) => t.name);
 };
 
 export const deletePlugin = async (
   pluginId: TId,
   token: string,
 ): Promise<void> => {
-  return await axios.delete(`${HUB_API_URL}/plugins/${pluginId}`, auth(token));
+  return await hubAxios.delete(
+    `${HUB_API_URL}/plugins/${pluginId}`,
+    auth(token),
+  );
 };

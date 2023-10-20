@@ -8,9 +8,7 @@ import { Runs } from './Runs';
 import { BasePage } from '../BasePage';
 import { useService } from './useService';
 import { useHistory, useLocationPath, useSelector } from '../../../hooks';
-import FilterComponent, {
-  getInitialFilterStateForRuns,
-} from '../../../components/Filters';
+import FilterComponent from '../../../components/Filters';
 import { Box } from '../../../components';
 import { workspaceSelectors } from '../../../../redux/selectors';
 import { DEFAULT_WORKSPACE_NAME } from '../../../../constants';
@@ -19,6 +17,11 @@ import { GetFlavorsListForLogo } from '../../stackComponents/Stacks/List/GetFlav
 import { FullWidthSpinner } from '../../../components';
 import { CollapseTable } from '../../common/CollapseTable';
 import { GetHeaderCols } from './getHeaderCols';
+import { Stack, StackComponent, Flavor } from '../../../../api/types';
+import {
+  getInitialFilterStateForRuns,
+  searchParamConstants,
+} from '../../AllRuns/Runs/filterParamConstants';
 
 const FilterWrapperForRun = () => {
   const locationPath = useLocationPath();
@@ -37,6 +40,7 @@ const FilterWrapperForRun = () => {
   return (
     <Box marginTop="lg" style={{ width: '100%' }}>
       <FilterComponent
+        searchColumns={searchParamConstants}
         getInitials={getInitialFilterStateForRuns}
         filters={filters}
         setFilter={setFilter}
@@ -66,6 +70,7 @@ const getTabPages = (
       path: routePaths.stack.configuration(stackId, selectedWorkspace),
     },
     {
+      testId: 'run_tab',
       text: translate('tabs.runs.text'),
       Component: FilterWrapperForRun,
       path: routePaths.stack.runs(selectedWorkspace, stackId),
@@ -113,18 +118,27 @@ export const StackDetail: React.FC = () => {
     return <FullWidthSpinner color="black" size="md" />;
   }
   if (flavourList?.length > 1) {
-    for (const [key] of Object.entries(stack?.components)) {
+    for (const [key] of Object.entries(
+      stack.components as Record<string, StackComponent[]>,
+    )) {
       const { logo_url }: any = flavourList.find(
-        (fl: any) =>
-          fl.name === stack?.components[key][0]?.flavor &&
-          fl.type === stack?.components[key][0]?.type,
+        (fl: Flavor) =>
+          fl.name ===
+            (stack.components as Record<string, StackComponent[]>)[key][0]
+              ?.flavor &&
+          fl.type ===
+            (stack.components as Record<string, StackComponent[]>)[key][0]
+              ?.type,
       );
 
       nestedRowtiles.push({
-        ...stack?.components[key][0],
+        ...((stack.components as Record<string, StackComponent[]>)[
+          key
+        ][0] as StackComponent),
         type: key,
-        name: stack?.components[key][0]?.name,
-        id: stack?.components[key][0]?.id,
+        name: (stack.components as Record<string, StackComponent[]>)[key][0]
+          ?.name,
+        id: (stack.components as Record<string, StackComponent[]>)[key][0]?.id,
         logo: logo_url,
       });
     }
@@ -142,7 +156,7 @@ export const StackDetail: React.FC = () => {
     filteredStacks,
   });
 
-  const openDetailPage = (stack: TStack) => {
+  const openDetailPage = (stack: Stack) => {
     history.push(routePaths.stacks.list(selectedWorkspace));
   };
   return (
@@ -156,7 +170,7 @@ export const StackDetail: React.FC = () => {
       <Box marginTop="lg" style={{ overflowX: 'auto' }}>
         <CollapseTable
           pagination={false}
-          renderAfterRow={(stack: TStack) => <></>}
+          renderAfterRow={() => <></>}
           headerCols={headerCols}
           tableRows={filteredStacks}
           emptyState={{ text: translate('emptyState.text') }}

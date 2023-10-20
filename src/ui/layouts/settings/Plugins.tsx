@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import Lottie from 'lottie-react';
-
 import { selectedWorkspace } from '../../../redux/selectors';
 import { routePaths } from '../../../routes/routePaths';
 import {
@@ -23,6 +21,7 @@ import { useHistory, useToaster } from '../../hooks';
 import { EmptyState } from '../common/EmptyState';
 import PluginFallbackImage from '../../assets/plugin-fallback.svg';
 import { hubConnectionPromptActionTypes } from '../../../redux/actionTypes';
+import { hubAxios } from '../../../utils/axios';
 
 type AugmentedPluginVersion = TPluginVersion & {
   name: string;
@@ -32,7 +31,7 @@ type AugmentedPluginVersion = TPluginVersion & {
 
 const getData = async (token: string) => {
   const versions = (
-    await axios.get(`${HUB_API_URL}/plugins?mine=true`, {
+    await hubAxios.get(`${HUB_API_URL}/plugins?mine=true`, {
       headers: { Authorization: `Bearer ${token}` },
     })
   ).data as AugmentedPluginVersion[];

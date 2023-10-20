@@ -17,11 +17,11 @@ import { useDispatch } from 'react-redux';
 
 import { useEffect, useState } from 'react';
 import { filterObjectForParam } from '../../../../utils';
-
+import { Flavor, StackComponent } from '../../../../api/types';
 import axios from 'axios';
 
 interface ServiceInterface {
-  stackComponent: TStack;
+  stackComponent: StackComponent;
   id: TId;
   flavor?: any;
   loading: any;
@@ -32,18 +32,13 @@ interface ServiceInterface {
 export const useService = (): ServiceInterface => {
   const dispatch = useDispatch();
 
-  const [mapStackComponent, setMapppedStackComponent] = useState([]);
   const [fetching, setFetching] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [flavor, setFlavor] = useState([]);
+  const [flavor, setFlavor] = useState(([] as unknown) as Flavor);
   const { id } = useParams<StackDetailRouteParams>();
   const authToken = useSelector(sessionSelectors.authenticationToken);
   const selectedWorkspace = useSelector(workspaceSelectors.selectedWorkspace);
   const currentFlavor = useSelector(flavorSelectors.myFlavorsAll) as any;
-  const ITEMS_PER_PAGE = parseInt(
-    process.env.REACT_APP_ITEMS_PER_PAGE as string,
-  );
-  const DEFAULT_ITEMS_PER_PAGE = 10;
   const stackComponent = useSelector(
     stackComponentSelectors.stackComponentForId(id),
   );

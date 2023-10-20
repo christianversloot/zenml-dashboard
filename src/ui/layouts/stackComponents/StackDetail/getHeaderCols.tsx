@@ -7,6 +7,17 @@ import {
 } from '../../../../utils';
 import { Box, FlexBox, icons, Paragraph, Tooltip } from '../../../components';
 import { HeaderCol } from '../../common/Table';
+import { StackComponent } from '../../../../api/types';
+
+const HeaderText = ({ text, margin }: { text: string; margin?: string }) => (
+  <Paragraph
+    size="small"
+    color="black"
+    style={{ fontSize: '14px', marginLeft: margin }}
+  >
+    {text}
+  </Paragraph>
+);
 
 export const GetHeaderCols = ({
   mappedStackComponentWithLogo,
@@ -15,17 +26,9 @@ export const GetHeaderCols = ({
 }): HeaderCol[] => {
   return [
     {
-      render: () => (
-        <Paragraph
-          size="small"
-          color="black"
-          style={{ fontSize: '14px', marginLeft: '33px' }}
-        >
-          ID
-        </Paragraph>
-      ),
+      render: () => <HeaderText text="ID" margin="33px" />,
       width: '20%',
-      renderRow: (stack: TStack) => (
+      renderRow: (stack: StackComponent) => (
         <>
           {stack.id && (
             <FlexBox alignItems="center">
@@ -48,13 +51,9 @@ export const GetHeaderCols = ({
       ),
     },
     {
-      render: () => (
-        <Paragraph size="small" color="black" style={{ fontSize: '14px' }}>
-          NAME
-        </Paragraph>
-      ),
+      render: () => <HeaderText text="NAME" />,
       width: '30%',
-      renderRow: (stack: TStack) => (
+      renderRow: (stack: StackComponent) => (
         <>
           {stack.name && (
             <FlexBox alignItems="center">
@@ -72,17 +71,11 @@ export const GetHeaderCols = ({
     {
       render: () => (
         <div style={{ margin: '0 auto 0 auto', textAlign: 'center' }}>
-          <Paragraph
-            size="small"
-            color="black"
-            style={{ fontSize: '14px', marginLeft: '-24px' }}
-          >
-            FLAVOR
-          </Paragraph>
+          <HeaderText text="FLAVOR" margin="-24px" />
         </div>
       ),
       width: '10%',
-      renderRow: (stackComponent: TStack) => (
+      renderRow: (stackComponent: any) => (
         <>
           {stackComponent?.flavor && (
             <FlexBox alignItems="center" style={{ marginLeft: '-24px' }}>
@@ -112,20 +105,18 @@ export const GetHeaderCols = ({
     {
       render: () => (
         <Box style={{ margin: '0 auto 0 auto', textAlign: 'center' }}>
-          <Paragraph size="small" color="black" style={{ marginLeft: '-24px' }}>
-            SHARED
-          </Paragraph>
+          <HeaderText text="SHARED" margin="-24px" />
         </Box>
       ),
       width: '10%',
-      renderRow: (stack: TStack) => (
+      renderRow: (stack: StackComponent) => (
         <>
           {stack && (
             <FlexBox alignItems="center">
               <div
                 style={{ margin: '0 auto 0 auto' }}
                 data-tip
-                data-for={stack.isShared}
+                data-for={stack.is_shared}
               >
                 <Box>
                   <FlexBox
@@ -137,7 +128,7 @@ export const GetHeaderCols = ({
                       textAlign: 'center',
                     }}
                   >
-                    {stack.isShared ? (
+                    {stack.is_shared ? (
                       <icons.multiUser
                         color={iconColors.white}
                         size={iconSizes.md}
@@ -152,8 +143,8 @@ export const GetHeaderCols = ({
                 </Box>
               </div>
               <Tooltip
-                id={stack.isShared ? 'true' : 'false'}
-                text={stack.isShared ? 'true' : 'false'}
+                id={stack.is_shared ? 'true' : 'false'}
+                text={stack.is_shared ? 'true' : 'false'}
               />
             </FlexBox>
           )}
@@ -162,13 +153,9 @@ export const GetHeaderCols = ({
     },
 
     {
-      render: () => (
-        <Paragraph size="small" color="black" style={{ fontSize: '14px' }}>
-          AUTHOR
-        </Paragraph>
-      ),
+      render: () => <HeaderText text="AUTHOR" />,
       width: '10%',
-      renderRow: (stack: TStack) => {
+      renderRow: (stack: StackComponent) => {
         return (
           <>
             {stack.user && (
@@ -208,13 +195,9 @@ export const GetHeaderCols = ({
       },
     },
     {
-      render: () => (
-        <Paragraph size="small" color="black" style={{ fontSize: '14px' }}>
-          CREATED AT
-        </Paragraph>
-      ),
+      render: () => <HeaderText text="CREATED AT" />,
       width: '30%',
-      renderRow: (stack: TStack) => (
+      renderRow: (stack: StackComponent) => (
         <>
           {stack.created && (
             <FlexBox alignItems="center">

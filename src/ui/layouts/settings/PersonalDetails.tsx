@@ -10,20 +10,19 @@ import {
 import { iconColors, iconSizes } from '../../../constants';
 import { useRequestOnMount, useSelector } from '../../hooks';
 import { userActions } from '../../../redux/actions';
-
-import { sessionSelectors, userSelectors } from '../../../redux/selectors';
+import { userSelectors } from '../../../redux/selectors';
 import { getTranslateByScope } from '../../../services';
 import { GhostButton } from '../../components/buttons/index';
 import { EmailPopup } from './EmailPopup';
 import { PasswordPopup } from './PasswordPopup';
 import { HubPopup } from './HubPopup';
 import { formatDateToDisplay } from '../../../utils';
-import jwt_decode from 'jwt-decode';
 import starsIcon from '../../assets/stars.svg';
 import { getInitials } from '../../../utils/name';
 import axios from 'axios';
 import { ConnectHub } from './ConnectHub';
 import { useHubUser } from '../../hooks/auth';
+import { getUniquePermissions } from './permissions';
 
 export const translate = getTranslateByScope('ui.layouts.PersonalDetails');
 
@@ -31,7 +30,7 @@ export const PersonalDetails: React.FC = () => {
   useRequestOnMount(userActions.getMy, {});
   const user = useSelector(userSelectors.myUser);
   const hubUser = useHubUser();
-  const userFullName = user?.fullName || user?.name;
+  const userFullName = user?.full_name || user?.name;
   const userInitials = getInitials(userFullName as string);
 
   const [popupOpen, setPopupOpen] = useState(false);
@@ -52,10 +51,8 @@ export const PersonalDetails: React.FC = () => {
   const [version, setVersion] = useState('');
   const [popupType, setPopupType] = useState('');
 
-  const authToken = useSelector(sessionSelectors.authenticationToken);
   // not sure what the actual data structure is here; need to fill this out in future
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const decoded: any = authToken ? jwt_decode(authToken) : undefined;
 
   const getVersion = async () => {
     const { data } = await axios.get(
@@ -140,7 +137,7 @@ export const PersonalDetails: React.FC = () => {
                 textAlign: 'center',
               }}
             >
-              {user?.fullName}
+              {user?.full_name}
             </Paragraph>
           </Box>
 
@@ -175,7 +172,7 @@ export const PersonalDetails: React.FC = () => {
         <Box style={{ flexGrow: 1 }} marginHorizontal="xl2">
           <Box marginTop="lg">
             <EditFieldSettings
-              disabled={!decoded.permissions.includes('me')}
+              disabled={!getUniquePermissions(user).includes('me')}
               label={translate('form.fullName.label')}
               labelColor="#828282"
               placeholder={translate('form.fullName.placeholder')}
@@ -187,7 +184,7 @@ export const PersonalDetails: React.FC = () => {
 
           <Box marginTop="lg">
             <EditFieldSettings
-              disabled={!decoded.permissions.includes('me')}
+              disabled={!getUniquePermissions(user).includes('me')}
               label={translate('form.username.label')}
               labelColor="#828282"
               placeholder={translate('form.username.placeholder')}
@@ -237,13 +234,13 @@ export const PersonalDetails: React.FC = () => {
 
           <Box marginTop="lg">
             <Paragraph style={{ color: '#828282' }}>Roles</Paragraph>
-            <FlexBox.Row>
+            <Box style={{ display: 'inline-grid', gap: '10px' }}>
               {user?.roles?.map((e: any) => (
-                <div className={styles.roleBean}>
+                <div key={e?.name} className={styles.roleBean}>
                   <p>{e?.name.charAt(0).toUpperCase() + e?.name?.slice(1)}</p>
                 </div>
               ))}
-            </FlexBox.Row>
+            </Box>
           </Box>
 
           <Box marginTop="lg">

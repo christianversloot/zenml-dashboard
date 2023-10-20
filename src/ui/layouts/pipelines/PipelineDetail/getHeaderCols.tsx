@@ -1,36 +1,31 @@
 import React from 'react';
 import { iconColors, iconSizes, ID_MAX_LENGTH } from '../../../../constants';
 import { truncate, formatDateToDisplayOnTable } from '../../../../utils';
-import {
-  // Box,
-  FlexBox,
-  icons,
-  // LinkBox,
-  Paragraph,
-  Tooltip,
-} from '../../../components';
+import { FlexBox, icons, Paragraph, Tooltip } from '../../../components';
 import { HeaderCol } from '../../common/Table';
-
 import { Status } from '../Pipelines/List/Status';
+import { Pipeline } from '../../../../api/types';
+
+const HeaderText = ({ text, margin }: { text: string; margin?: string }) => (
+  <Paragraph
+    size="small"
+    color="black"
+    style={{ fontSize: '14px', marginLeft: margin }}
+  >
+    {text}
+  </Paragraph>
+);
 
 export const GetHeaderCols = ({
   filteredPipelines,
 }: {
-  filteredPipelines: TPipeline[];
+  filteredPipelines: Pipeline[];
 }): HeaderCol[] => {
   return [
     {
-      render: () => (
-        <Paragraph
-          size="small"
-          color="black"
-          style={{ fontSize: '14px', marginLeft: '33px' }}
-        >
-          ID
-        </Paragraph>
-      ),
+      render: () => <HeaderText text="ID" margin="33px" />,
       width: '20%',
-      renderRow: (pipeline: TPipeline) => (
+      renderRow: (pipeline: Pipeline) => (
         <FlexBox alignItems="center">
           <div data-tip data-for={pipeline.id}>
             <FlexBox.Row style={{ alignItems: 'center' }}>
@@ -45,13 +40,9 @@ export const GetHeaderCols = ({
       ),
     },
     {
-      render: () => (
-        <Paragraph size="small" color="black" style={{ fontSize: '14px' }}>
-          NAME
-        </Paragraph>
-      ),
+      render: () => <HeaderText text="NAME" />,
       width: '30%',
-      renderRow: (pipeline: TPipeline) => (
+      renderRow: (pipeline: Pipeline) => (
         <FlexBox alignItems="center">
           <div data-tip data-for={pipeline.name}>
             <Paragraph size="small">{pipeline.name}</Paragraph>
@@ -63,38 +54,23 @@ export const GetHeaderCols = ({
     {
       render: () => (
         <div style={{ margin: '0 auto 0 auto', textAlign: 'center' }}>
-          <Paragraph
-            size="small"
-            color="black"
-            style={{ fontSize: '14px', marginLeft: '-24px' }}
-          >
-            STATUS
-          </Paragraph>
+          <HeaderText text="STATUS" margin="-24px" />
         </div>
       ),
       width: '10%',
-      renderRow: (pipeline: TPipeline) => <Status pipeline={pipeline} />,
+      renderRow: (pipeline: Pipeline) => <Status pipeline={pipeline} />,
     },
     {
-      render: () => (
-        <Paragraph size="small" color="black" style={{ fontSize: '14px' }}>
-          VERSION
-        </Paragraph>
-      ),
+      render: () => <HeaderText text="VERSION" />,
       width: '10%',
-      renderRow: (pipeline: TPipeline) => (
+      renderRow: (pipeline: Pipeline) => (
         <Paragraph size="small">{pipeline?.version}</Paragraph>
       ),
     },
-
     {
-      render: () => (
-        <Paragraph size="small" color="black" style={{ fontSize: '14px' }}>
-          AUTHOR
-        </Paragraph>
-      ),
+      render: () => <HeaderText text="AUTHOR" />,
       width: '10%',
-      renderRow: (pipeline: TPipeline) => {
+      renderRow: (pipeline: Pipeline) => {
         return (
           <FlexBox alignItems="center">
             <div
@@ -130,13 +106,9 @@ export const GetHeaderCols = ({
       },
     },
     {
-      render: () => (
-        <Paragraph size="small" color="black" style={{ fontSize: '14px' }}>
-          CREATED AT
-        </Paragraph>
-      ),
+      render: () => <HeaderText text="CREATED AT" />,
       width: '20%',
-      renderRow: (pipeline: TPipeline) => (
+      renderRow: (pipeline: Pipeline) => (
         <FlexBox alignItems="center">
           <div data-tip data-for={formatDateToDisplayOnTable(pipeline.created)}>
             <FlexBox alignItems="center">

@@ -15,15 +15,19 @@ import { DEFAULT_WORKSPACE_NAME } from '../../../../constants';
 import { CollapseTable } from '../../common/CollapseTable';
 import { GetHeaderCols } from './getHeaderCols';
 import { ConnectorComponents } from './ConnectorComponents';
-import FilterComponent, {
-  getInitialFilterState,
-} from '../../../components/Filters';
+import FilterComponent from '../../../components/Filters';
+import {
+  getInitialFilterStateStackComponents,
+  searchParamConstants,
+} from '../../stackComponents/Stacks/filterParamConstants';
 
 const FilterWrapper = () => {
   const locationPath = useLocationPath();
 
   // TODO: Dev please note: getInitialFilterState is for stack inital filter value for any other component you need to modify it
-  const [filters, setFilter] = useState([getInitialFilterState()]);
+  const [filters, setFilter] = useState([
+    getInitialFilterStateStackComponents(),
+  ]);
   function getFilter(values: any) {
     const filterValuesMap = values.map((v: any) => {
       return {
@@ -37,7 +41,8 @@ const FilterWrapper = () => {
   return (
     <Box style={{ marginTop: '10px', width: '100%' }}>
       <FilterComponent
-        getInitials={getInitialFilterState}
+        searchColumns={searchParamConstants}
+        getInitials={getInitialFilterStateStackComponents}
         filters={filters}
         setFilter={setFilter}
       >
@@ -63,6 +68,7 @@ const getTabPages = (
       path: routePaths.connectors.configuration(connectorId, selectedWorkspace),
     },
     {
+      testId: 'component_tab',
       text: 'Components',
       Component: FilterWrapper,
       path: routePaths.connectors.connectorComponents(
@@ -100,7 +106,7 @@ export interface SecretDetailRouteParams {
   id: TId;
 }
 
-export const StackDetail: React.FC = () => {
+export const ConnectorDetail: React.FC = () => {
   const { connector, fetching } = useService();
   const filteredConnector: any = [];
   filteredConnector.push(connector);
@@ -141,4 +147,4 @@ export const StackDetail: React.FC = () => {
   );
 };
 
-export default StackDetail;
+export default ConnectorDetail;

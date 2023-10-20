@@ -10,15 +10,16 @@ import {
   Spinner,
 } from '../../../../components';
 import { useService } from './useService';
+import { Run } from '../../../../../api/types';
 
-export const RunUser: React.FC<{ run: TRun }> = ({ run }) => {
+export const RunUser: React.FC<{ run: Run }> = ({ run }) => {
   const { fetching, user } = useService({ run });
 
   if (fetching) {
     return <Spinner size="xs" color="black" />;
   }
 
-  const userFullName = user.fullName || DEFAULT_FULL_NAME;
+  const userFullName = user.full_name || DEFAULT_FULL_NAME;
   const initials = getInitials(userFullName);
 
   return (

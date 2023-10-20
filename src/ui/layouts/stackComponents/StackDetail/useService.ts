@@ -15,13 +15,14 @@ import { useDispatch } from 'react-redux';
 
 import { useEffect, useState } from 'react';
 import { filterObjectForParam } from '../../../../utils';
+import { Flavor, StackComponent } from '../../../../api/types';
 
 import axios from 'axios';
 
 interface ServiceInterface {
-  stackComponent: TStack;
+  stackComponent: StackComponent;
   id: TId;
-  flavor?: any;
+  flavor: any;
   loading: any;
   serviceConnectorResources?: any;
 }
@@ -29,9 +30,8 @@ interface ServiceInterface {
 export const useService = (): ServiceInterface => {
   const dispatch = useDispatch();
   const authToken = useSelector(sessionSelectors.authenticationToken);
-  const [mapStackComponent, setMapppedStackComponent] = useState([]);
   const [fetching, setFetching] = useState(false);
-  const [flavor, setFlavor] = useState([]);
+  const [flavor, setFlavor] = useState(([] as unknown) as Flavor);
   const [
     serviceConnectorResources,
     setServiceConnectorResources,

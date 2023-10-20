@@ -5,38 +5,25 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  stackComponentsActions,
-  stackPagesActions,
-} from '../../../../../redux/actions';
-import {
-  workspaceSelectors,
-  stackComponentSelectors,
-  stackPagesSelectors,
-  stackSelectors,
   flavorSelectors,
   flavorPagesSelectors,
 } from '../../../../../redux/selectors';
-import { getFilteredDataForTable } from '../../../../../utils/tableFilters';
-import { useLocationPath } from '../../../../hooks';
 import axios from 'axios';
+import { Flavor } from '../../../../../api/types';
 
 interface ServiceInterface {
   fetching: boolean;
   version: string;
-  setAllFlavors: (flavors: any[]) => void;
-  allFlavors: any[];
+  setAllFlavors: (flavors: Flavor[]) => void;
+  allFlavors: Flavor[];
 }
 
 export const useService = (): ServiceInterface => {
-  const dispatch = useDispatch();
-  const locationPath = useLocationPath();
-  const [openStackIds, setOpenStackIds] = useState<TId[]>([]);
-  const [allFlavors, setAllFlavors] = useState<any[]>([]);
+  const [allFlavors, setAllFlavors] = useState<Flavor[]>([]);
   const [version, setVersion] = useState('');
 
   const fetching = useSelector(flavorPagesSelectors.fetching);
 
-  const selectedWorkspace = useSelector(workspaceSelectors.selectedWorkspace);
   const flavors = useSelector(flavorSelectors.myFlavorsAll);
 
   const getVersion = async () => {
@@ -46,13 +33,9 @@ export const useService = (): ServiceInterface => {
     setVersion(data);
   };
   useEffect(() => {
-    setAllFlavors(flavors as any[]);
+    setAllFlavors(flavors as Flavor[]);
     getVersion();
   }, [flavors]);
-
-  const setSelectedRunIds = (runIds: TId[]) => {
-    dispatch(stackPagesActions.setSelectedRunIds({ runIds }));
-  };
 
   return {
     allFlavors,

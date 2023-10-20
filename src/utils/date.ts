@@ -13,7 +13,7 @@ const dateformat = (date: any) =>
 const formatDateToFormat = (dateString: any, dateFormat: string): string =>
   format(new Date(dateString), dateFormat);
 
-export const formatDateToDisplay = (dateString: Date): string => {
+export const formatDateToDisplay = (dateString: Date | string): string => {
   if (typeof dateString === 'undefined' || !dateString) return '';
   return formatDateToFormat(dateformat(dateString), `dd.MM.yyyy HH:mm:ss`);
 };
@@ -27,7 +27,7 @@ export const formatDateToDisplayWithoutTime = (dateString: Date): string => {
   return formatDateToFormat(dateformat(dateString), `MM/dd/yyyy`);
 };
 
-export const formatDateToSort = (dateString: Date): string => {
+export const formatDateToSort = (dateString: Date | string): string => {
   if (typeof dateString === 'undefined' || !dateString) return '';
   return formatDateToFormat(dateString, `dd.MM.yyyy'T'HH:mm:ss.SSS'Z'`);
 };

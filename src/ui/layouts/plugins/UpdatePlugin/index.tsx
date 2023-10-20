@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useHistory, useParams } from 'react-router-dom';
 import moment from 'moment';
 
@@ -25,6 +24,8 @@ import { useHubToken } from '../../../hooks/auth';
 import { pick } from '../../../../utils';
 import { PluginsLayout } from '../shared/Layout';
 import { getPlugin } from '../api';
+import { hubAxios } from '../../../../utils/axios';
+import { Plugin } from '../pluginsTypes';
 
 export const translate = getTranslateByScope('ui.layouts.Plugins.create');
 
@@ -37,7 +38,7 @@ const UpdatePlugin: React.FC = () => {
   const { pluginId } = useParams<{ pluginId: string }>();
   const { failureToast } = useToaster();
 
-  const [plugin, setPlugin] = useState(null as null | TPluginDetail);
+  const [plugin, setPlugin] = useState(null as null | Plugin);
   const [previousVersionNumber, setPreviousVersionNumber] = useState('');
   const [versionNumber, setVersionNumber] = useState('');
   const [repositoryUrl, setRepositoryUrl] = useState('');
@@ -56,7 +57,7 @@ const UpdatePlugin: React.FC = () => {
       if (!repositorySubdirectory && p.repository_subdirectory)
         setRepositorySubdirectory(p.repository_subdirectory);
       if (!logoUrl && p.logo_url) setLogoUrl(p.logo_url);
-      setPreviousVersionNumber(p.version);
+      setPreviousVersionNumber(p.version as string);
     });
     // eslint-disable-next-line
   }, [pluginId]);
@@ -226,7 +227,7 @@ const UpdatePlugin: React.FC = () => {
                       description: 'Failed to fetch plugin details',
                     });
 
-                  axios
+                  hubAxios
                     .post(
                       `${HUB_API_URL}/plugins`,
                       {

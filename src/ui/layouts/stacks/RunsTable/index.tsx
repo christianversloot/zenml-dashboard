@@ -2,24 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { workspaceSelectors } from '../../../../redux/selectors';
 import { routePaths } from '../../../../routes/routePaths';
 import { useHistory, useSelector } from '../../../hooks';
-
 import { Table } from '../../common/Table';
-
-import { useHeaderCols } from './HeaderCols';
-import { useService } from './useService';
+import { useHeaderCols } from '../../runs/RunsTable/HeaderCols';
+import { useService } from '../../runs/RunsTable/useService';
 import { Box, FlexBox, If } from '../../../components';
 import { Pagination } from '../../common/Pagination';
 import { ItemPerPage } from '../../common/ItemPerPage';
 import { usePaginationAsQueryParam } from '../../../hooks/usePaginationAsQueryParam';
 import { callActionForStackRunsForPagination } from '../StackDetail/useService';
-interface filterValue {
-  label: string;
-  type: string;
-  value: string;
-}
-interface Props {
-  filter: any;
-}
+import { Run } from '../../../../api/types';
+
 export const RunsTable: React.FC<{
   isExpended?: boolean;
   stackId?: any;
@@ -66,7 +58,7 @@ export const RunsTable: React.FC<{
   );
   const initialRef: any = null;
   const childRef = React.useRef(initialRef);
-  const openDetailPage = (run: TRun) => {
+  const openDetailPage = (run: Run) => {
     setSelectedRunIds([]);
     if (id) {
       history.push(routePaths.stack.runs(selectedWorkspace, stackId));
@@ -75,7 +67,7 @@ export const RunsTable: React.FC<{
         routePaths.run.stack.statistics(
           selectedWorkspace,
           run.id,
-          run.stack.id,
+          run.stack?.id as string,
         ),
       );
     }
@@ -89,6 +81,7 @@ export const RunsTable: React.FC<{
     setActiveSorting,
     activeSortingDirection,
     setActiveSortingDirection,
+    nestedRuns: false,
   });
 
   const validFilters = filter?.filter((item: any) => item.value);

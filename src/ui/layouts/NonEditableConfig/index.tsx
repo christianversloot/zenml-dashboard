@@ -20,7 +20,7 @@ export const NonEditableConfig: React.FC<{ details: any }> = ({ details }) => {
   const history = useHistory();
   const { flavor } = useService({
     details,
-  });
+  }) as any;
 
   const titleCase = (s: any) =>
     s.replace(/^_*(.)|_+(.)/g, (s: any, c: string, d: string) =>
@@ -104,7 +104,7 @@ export const NonEditableConfig: React.FC<{ details: any }> = ({ details }) => {
             <label htmlFor={elementName}>{titleCase(elementName)}</label>
           </Paragraph>
 
-          {Object.keys(elementSchema).length < 1 && (
+          {Object.keys(elementSchema || {}).length < 1 && (
             <Box style={{ position: 'relative' }}>
               <div
                 style={{
@@ -192,8 +192,8 @@ export const NonEditableConfig: React.FC<{ details: any }> = ({ details }) => {
                 marginLeft: '2px',
               }}
             >
-              {Object.entries(elementSchema).map(([key, value], index) => (
-                <FlexBox.Row>
+              {/* {Object.entries(elementSchema).map(([key, value], index) => (
+                <FlexBox.Row key={index}>
                   <Box
                     style={{
                       display: 'flex',
@@ -240,7 +240,7 @@ export const NonEditableConfig: React.FC<{ details: any }> = ({ details }) => {
                     />
                   </Box>
                 </FlexBox.Row>
-              ))}
+              ))} */}
             </div>
           </Box>
         </Box>
@@ -272,43 +272,42 @@ export const NonEditableConfig: React.FC<{ details: any }> = ({ details }) => {
                 marginLeft: '2px',
               }}
             >
-              {mappedObject &&
-                mappedObject[elementName]?.map((item: any, index: any) => (
-                  <Fragment key={index}>
-                    <Box
-                      style={{ display: 'flex', alignItems: 'center' }}
-                      marginTop="sm"
+              {mappedObject[elementName]?.map((item: any, index: any) => (
+                <Fragment key={index}>
+                  <Box
+                    style={{ display: 'flex', alignItems: 'center' }}
+                    marginTop="sm"
+                  >
+                    <div
+                      style={{
+                        marginTop: '30px',
+                        width: '15px',
+                        borderTop: '1px solid rgba(68, 62, 153, 0.3)',
+                      }}
+                    ></div>
+                    <div
+                      style={{
+                        marginTop: '30px',
+                        marginRight: '5px',
+                        marginLeft: '-2px',
+                        color: 'rgba(68, 62, 153, 0.3)',
+                      }}
                     >
-                      <div
-                        style={{
-                          marginTop: '30px',
-                          width: '15px',
-                          borderTop: '1px solid rgba(68, 62, 153, 0.3)',
-                        }}
-                      ></div>
-                      <div
-                        style={{
-                          marginTop: '30px',
-                          marginRight: '5px',
-                          marginLeft: '-2px',
-                          color: 'rgba(68, 62, 153, 0.3)',
-                        }}
-                      >
-                        &#x27A4;
-                      </div>
+                      &#x27A4;
+                    </div>
 
-                      <div className="form-group" style={{ width: '28.3vw' }}>
-                        <EditField
-                          disabled
-                          className={styles.field}
-                          label={'Value'}
-                          value={item}
-                          placeholder={''}
-                        />
-                      </div>
-                    </Box>
-                  </Fragment>
-                ))}
+                    <div className="form-group" style={{ width: '28.3vw' }}>
+                      <EditField
+                        disabled
+                        className={styles.field}
+                        label={'Value'}
+                        value={item}
+                        placeholder={''}
+                      />
+                    </div>
+                  </Box>
+                </Fragment>
+              ))}
             </div>
             <div className="submit-button"></div>
             <br />
@@ -336,20 +335,19 @@ export const NonEditableConfig: React.FC<{ details: any }> = ({ details }) => {
     return <FullWidthSpinner color="black" size="md" />;
   }
 
-  let result = Object.keys(flavor?.config_schema?.properties).reduce(function (
-    r: any,
-    name: any,
-  ) {
-    return (
-      (r[name] =
-        flavor?.config_schema?.properties[name].type === 'string' &&
-        flavor?.config_schema?.properties[name].default === undefined
-          ? ''
-          : flavor?.config_schema?.properties[name].default),
-      r
-    );
-  },
-  {});
+  let result = Object.keys(flavor?.config_schema?.properties || {}).reduce(
+    function (r: any, name: any) {
+      return (
+        (r[name] =
+          flavor?.config_schema?.properties[name].type === 'string' &&
+          flavor?.config_schema?.properties[name].default === undefined
+            ? ''
+            : flavor?.config_schema?.properties[name].default),
+        r
+      );
+    },
+    {},
+  );
 
   function replaceNullWithEmptyString(obj: any) {
     for (let prop in obj) {
@@ -368,16 +366,17 @@ export const NonEditableConfig: React.FC<{ details: any }> = ({ details }) => {
     ...result,
     ...details?.configuration,
   };
+  console.log(mappedObject, flavor?.config_schema?.properties, 'asdasda123123');
 
   return (
-    <FlexBox.Column marginTop="xl" fullWidth>
+    <FlexBox.Column marginTop="xl" fullWidth marginBottom="20xl">
       <FlexBox.Row flexDirection="column">
         <Box style={{ width: '30vw' }}>
           <EditField
             disabled
             label={'Flavor Name'}
             optional={false}
-            value={details.flavor}
+            value={details?.flavor}
             placeholder=""
             hasError={false}
             className={styles.field}
@@ -386,7 +385,7 @@ export const NonEditableConfig: React.FC<{ details: any }> = ({ details }) => {
         <Box marginTop="lg">
           <ToggleField
             name="Share Component with public"
-            value={details.is_shared}
+            value={details?.is_shared}
             label="Share Component with public"
             disabled={true}
           />
@@ -394,8 +393,10 @@ export const NonEditableConfig: React.FC<{ details: any }> = ({ details }) => {
       </FlexBox.Row>
       <FlexBox.Row flexDirection="column">
         <Box style={{ width: '80%' }}>
-          {Object.keys(mappedObject).map((key, ind) => (
-            <>{getFormElement(key, mappedObject[key])}</>
+          {Object.keys(mappedObject).map((key, index) => (
+            <React.Fragment key={index}>
+              {getFormElement(key, mappedObject[key])}
+            </React.Fragment>
           ))}
         </Box>
       </FlexBox.Row>
