@@ -285,10 +285,10 @@
               }
             },
             "cardTwo": {
-              "title": "Get a free, managed ZenML instance",
+              "title": "Get your own ZenML dashboard",
               "button": {
                 "text": "Manage",
-                "href": "https://docs.zenml.io/"
+                "href": "https://zenml.io/cloud"
               }
             },
             "cardThree": {

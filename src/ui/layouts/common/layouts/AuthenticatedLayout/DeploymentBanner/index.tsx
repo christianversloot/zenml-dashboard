@@ -5,8 +5,8 @@ function DeploymentBanner() {
   return (
     <aside className={styles.deploymentBanner}>
       <p className={styles.deploymentBanner__paragraph}>
-        ZenML is running locally. In order to run your pipelines in the cloud,
-        you need to{' '}
+        This is a demo version of the ZenML dashboard. To deploy your own, you
+        need to{' '}
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -18,7 +18,7 @@ function DeploymentBanner() {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://docs.zenml.io/deploying-zenml/zenml-cloud"
+          href="https://zenml.io/cloud"
         >
           {' '}
           ZenML Cloud

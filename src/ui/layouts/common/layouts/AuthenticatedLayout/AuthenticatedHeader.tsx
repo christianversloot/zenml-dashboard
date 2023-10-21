@@ -145,7 +145,7 @@ export const AuthenticatedHeader: React.FC<{
 
   return (
     <>
-      {deploymentType === 'local' && <DeploymentBanner />}
+      <DeploymentBanner />
       {createPopupOpen && <WorkspacePopup setPopupOpen={setCreatePopupOpen} />}
       <FlexBox
         paddingHorizontal="lg"
